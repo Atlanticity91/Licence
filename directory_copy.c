@@ -502,7 +502,7 @@ int copy( string_t path_in, string_t path_out ) {
 			}
 
 			// On ferme le répertoire.
-			closed( &directory );
+			return closed( &directory );
 		}
 	}
 	
