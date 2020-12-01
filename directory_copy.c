@@ -25,6 +25,27 @@
 #define NONE 0
 
 /**
+ * ERRR_NO macro
+ * @author : ALVES Quentin
+ * @note : Définie un alias pour définir aucune érreur.
+ **/
+#define ERRR_NO NONE
+
+/**
+ * ERRR_INVALID_DIR macro
+ * @author : ALVES Quentin
+ * @note : Définie un alias pour définir aucune érreur de répertoire.
+ **/
+#define ERRR_INVALID_DIR -1
+
+/**
+ * ERRR_INVALID_FILE macro
+ * @author : ALVES Quentin
+ * @note : Définie un alias pour définir une érreur de fichier.
+ **/
+#define ERRR_INVALID_FILE -2
+
+/**
  * string_t type alias
  * @author : ALVES Quentin
  **/
@@ -380,20 +401,21 @@ bool_t is_directory( string_t path ) {
 }
 
 /**
- * copy méthode
+ * copy fonction
  * @author : ALVES Quentin
  * @note : Crée un répertoire <destination> avec les mêmes permissions 
  *		   que le répertoire <source>.
  * @param destination : Chemin vers le répertoire de destination.
  * @param source : Chemin vers le répertoire d'origine.
+ * @return : int
  **/
-void copy( string_t path_in, string_t path_out ) {
+int copy( string_t path_in, string_t path_out ) {
 	// Si le chemin d'entrée n'est pas un répertoire.
 	if ( is_directory( path_in ) == B_FALSE ) {
 		// Si le chemin de sortie est un répertoire.
 		if ( is_directory( path_out ) == B_TRUE ) {
 			printf( "Un fichier ne peut être copier que dans un nouveau fichier !\n" );
-			return;
+			return ERRR_INVALID_FILE;
 		}
 		
 		// On crée les instance de file_t.
@@ -440,7 +462,7 @@ void copy( string_t path_in, string_t path_out ) {
 		// Si le chemin de sortie n'est pas un répertoire.
 		if ( is_directory( path_out ) == B_FALSE ) {
 			printf( "Un répertoire ne peut être copier que dans un nouveau répertoire !\n" );
-			return;
+			return ERRR_INVALID_DIR;
 		}
 		
 		// On crée l'instance de directory_t.
@@ -483,6 +505,8 @@ void copy( string_t path_in, string_t path_out ) {
 			closed( &directory );
 		}
 	}
+	
+	return ERRR_NO;
 }
 
 /**
@@ -497,7 +521,7 @@ int main( int argc, char** argv ) {
 	if ( argc == 3 ) {
 		copy( argv[ 1 ], argv[ 2 ] );
 	} else
-		printf( "Il faut donnée 2 répertoire pour éffectuée une copie !\n" );
+		printf( "Il faut donnée 2 répertoire ou 2 fichier pour éffectuée une copie !\n" );
 
 	return 0;
 }
