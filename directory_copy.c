@@ -498,11 +498,11 @@ int copy( string_t path_in, string_t path_out ) {
 				}
 					
 				// On copie récursivement le contenue du répertoire.
-				copie( buff_path_in, buff_path_out );
+				return copie( buff_path_in, buff_path_out );
 			}
 
 			// On ferme le répertoire.
-			return closed( &directory );
+			closed( &directory );
 		}
 	}
 	
@@ -519,7 +519,12 @@ int copy( string_t path_in, string_t path_out ) {
  **/
 int main( int argc, char** argv ) {
 	if ( argc == 3 ) {
-		copy( argv[ 1 ], argv[ 2 ] );
+		int copy_errr = copy( argv[ 1 ], argv[ 2 ] );
+		
+		if ( copy_errr == ERRR_NO )
+			printf( "La copie c'est terminé avec succes !\n" );
+		else
+			printf( "La copie c'est terminé avec l'érreur %d !\n", copy_errr );
 	} else
 		printf( "Il faut donnée 2 répertoire ou 2 fichier pour éffectuée une copie !\n" );
 
