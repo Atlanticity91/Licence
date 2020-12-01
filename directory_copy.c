@@ -410,6 +410,9 @@ bool_t is_directory( string_t path ) {
  * @return : int
  **/
 int copy( string_t path_in, string_t path_out ) {
+	// On définie que la valeur d'érreur par défault est ERRR_NO soit pas d'érreur.
+	int err_copy = ERRR_NO;
+	
 	// Si le chemin d'entrée n'est pas un répertoire.
 	if ( is_directory( path_in ) == B_FALSE ) {
 		// Si le chemin de sortie est un répertoire.
@@ -453,7 +456,8 @@ int copy( string_t path_in, string_t path_out ) {
 				} else
 					break;
 		    }
-		}
+		} else
+			err_copy = ERRR_INVALID_FILE;
 		
 		// On ferme les fichiers.
 		closef( &file_in );
@@ -474,8 +478,8 @@ int copy( string_t path_in, string_t path_out ) {
 			BUFFER( buff_path_in, 4096 );
 			BUFFER( buff_path_out, 4096 );
 			
-			// Tant que l'on trouve un élément dans le répertoire.
-			while( readd( &directory ) == B_TRUE ) {
+			// Tant que l'on trouve un élément dans le répertoire et qu'il n'y a pas d'érreur.
+			while( readd( &directory ) == B_TRUE && err_copy == ERRR_NO ) {
 				// On reset les buffer.
 				reset_buffer( buff_path_in, path_in );
 				reset_buffer( buff_path_out, path_out );
@@ -498,15 +502,16 @@ int copy( string_t path_in, string_t path_out ) {
 				}
 					
 				// On copie récursivement le contenue du répertoire.
-				return copie( buff_path_in, buff_path_out );
-			}
+				err_copy = copy( buff_path_in, buff_path_out );
+			} else
+				err_copy = ERRR_INVALID_DIR;
 
 			// On ferme le répertoire.
 			closed( &directory );
 		}
 	}
 	
-	return ERRR_NO;
+	return err_copy;
 }
 
 /**
